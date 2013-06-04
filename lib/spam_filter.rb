@@ -9,10 +9,9 @@ class SpamFilter
   end
 
   def feed_message(message, spam_status)
-    words = message.split(/\W+/).map { |m| m.downcase}
     increment_counter(spam_status)
-    words.each do |i|
-        @words_hash[[i,spam_status]] += 1
+    words = message.scan(/\w+/) do |i|
+        @words_hash[[i.downcase,spam_status]] += 1
     end
   end
 
