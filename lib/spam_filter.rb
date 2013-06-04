@@ -2,8 +2,8 @@ class SpamFilter
   attr_reader :words_hash, :ham_count, :spam_count, :probability_hash
 
   def initialize
-    @words_hash = {}
-    @probability_hash = {}
+    @words_hash = Hash.new(0)
+    @probability_hash = Hash.new(4)
     @ham_count = 1
     @spam_count = 1
   end
@@ -12,11 +12,7 @@ class SpamFilter
     words = message.split(/\W+/).map { |m| m.downcase}
     increment_counter(spam_status)
     words.each do |i|
-      if @words_hash.key?([i,spam_status])
         @words_hash[[i,spam_status]] += 1
-      else
-        @words_hash[[i, spam_status]] = 1
-      end
     end
   end
 
@@ -27,8 +23,8 @@ class SpamFilter
   end
 
   def calculate_probability(word)
-    ham_word_frequency = 2 * (words_hash[[word,:good]] || 0)
-    spam_word_frequency = words_hash[[word, :bad]] || 0
+    ham_word_frequency = 2 * words_hash[[word,:good]]
+    spam_word_frequency = words_hash[[word, :bad]]
     return if ham_word_frequency + spam_word_frequency < 5
     word_probability = min(1.0, spam_word_frequency.to_f / spam_count)
     total_probability = word_probability + min(1.0, ham_word_frequency.to_f / ham_count)
@@ -47,12 +43,7 @@ class SpamFilter
   end
 
   def intersting_words(words)
-    probs = words.map do |word|
-      unless @probability_hash.key?(word)
-        @probability_hash[word] = 0.4
-      end
-      probability_hash[word]
-    end
+    probs = words.map { |word| probability_hash[word] }
     probs.compact.sort { |a, b| (b - 0.5).abs <=> (a - 0.5).abs }[0..14]
   end
 
