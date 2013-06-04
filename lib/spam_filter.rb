@@ -9,7 +9,7 @@ class SpamFilter
   end
 
   def feed_message(message, spam_status)
-    words = message.split(/\W+/).map { |m| m.downcase.to_sym }
+    words = message.split(/\W+/).map { |m| m.downcase}
     increment_counter(spam_status)
     words.each do |i|
       if @words_hash.key?([i,spam_status])
@@ -40,7 +40,7 @@ class SpamFilter
   end
 
   def spamicity(message)
-    words = message.split(/\W+/).map { |m| m.downcase.to_sym }
+    words = message.split(/\W+/).map { |m| m.downcase}
     probs = intersting_words(words)
     prods = probs.inject(:*)
     prods / (prods + probs.map { |x| 1 - x }.inject(:*))
