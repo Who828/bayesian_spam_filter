@@ -3,14 +3,14 @@ class SpamFilter
 
   def initialize
     @words_hash = Hash.new(0)
-    @probability_hash = Hash.new(4)
+    @probability_hash = Hash.new(0.4)
     @ham_count = 1
     @spam_count = 1
   end
 
   def feed_message(message, spam_status)
     increment_counter(spam_status)
-    words = message.scan(/\w+/) do |i|
+    message.scan(/\w+/) do |i|
         @words_hash[[i.downcase,spam_status]] += 1
     end
   end
