@@ -1,4 +1,8 @@
+require 'utility'
+
 class SpamFilter
+  include Utility
+
   attr_reader :words_hash, :ham_count, :spam_count, :probability_hash
 
   def initialize
@@ -52,15 +56,4 @@ class SpamFilter
     @ham_count += 1 if status == :good
     @spam_count += 1 if status == :bad
   end
-
-  def min(a, b)
-    return a if a < b
-    return b
-  end
-
-  def max(a, b)
-    return a if a > b
-    return b
-  end
-
 end
